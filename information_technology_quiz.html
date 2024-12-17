@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Technology Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            /* background-color: #007BFF; */
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .question-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .question-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .options label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #submit-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+        }
+
+        #result {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 50px;
+            color: red;
+        }
+    </style>
+</head>
+<body style="background-image: url(it.jpeg);">
+    <header>
+        Information Technology Quiz
+    </header>
+
+    <div class="quiz-container">
+        <div id="question-card" class="question-card">
+            <h3 id="question">Question text</h3>
+            <div class="options" id="options">
+                <!-- Options will be injected here -->
+            </div>
+            <div class="navigation">
+                <button id="prev-btn">Previous</button>
+                <button id="next-btn">Next</button>
+            </div>
+        </div>
+        <div id="result"></div>
+    </div>
+    <button id="submit-btn">Submit</button>
+
+    <script>
+        const questions = [
+            { question: "What does HTML stand for?", options: ["Hyper Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language", "None of the above"], answer: 0 },
+            { question: "Which company developed the Windows operating system?", options: ["Apple", "Microsoft", "Google", "IBM"], answer: 1 },
+            { question: "What is the full form of CPU?", options: ["Central Processing Unit", "Central Program Unit", "Computer Personal Unit", "Central Power Unit"], answer: 0 },
+            { question: "What is the main function of an operating system?", options: ["Manage hardware", "Run software programs", "Perform calculations", "Both a and b"], answer: 3 },
+            { question: "Which of the following is not a programming language?", options: ["Python", "Java", "HTML", "C++"], answer: 2 },
+            { question: "What does the 'HTTP' stand for?", options: ["Hyper Text Transfer Protocol", "Hyper Tool Transfer Protocol", "Home Text Transfer Protocol", "Hyperlink Text Transfer Protocol"], answer: 0 },
+            { question: "Which company developed the first computer mouse?", options: ["Apple", "Microsoft", "Xerox", "IBM"], answer: 2 },
+            { question: "What does 'RAM' stand for in computing?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Read All Memory"], answer: 0 },
+            { question: "What is the primary function of the internet?", options: ["Social Media", "Communication", "Web browsing", "All of the above"], answer: 3 },
+            { question: "Which of these is a type of computer network?", options: ["LAN", "WAN", "VPN", "All of the above"], answer: 3 },
+            { question: "What does 'URL' stand for?", options: ["Uniform Resource Locator", "Universal Resource Locator", "Uniform Research Locator", "Universal Research Locator"], answer: 0 },
+            { question: "Which of these is an example of a search engine?", options: ["Google", "Facebook", "Twitter", "Instagram"], answer: 0 },
+            { question: "What is the full form of USB?", options: ["Universal Serial Bus", "Universal Standard Bus", "Universal System Bus", "Universal Software Bus"], answer: 0 },
+            { question: "Which programming language is mainly used for web development?", options: ["Python", "Java", "JavaScript", "Ruby"], answer: 2 },
+            { question: "What is the most widely used operating system for personal computers?", options: ["Linux", "Windows", "MacOS", "Android"], answer: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        const answers = new Array(questions.length).fill(null);
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const nextBtn = document.getElementById("next-btn");
+        const prevBtn = document.getElementById("prev-btn");
+        const submitBtn = document.getElementById("submit-btn");
+        const resultElement = document.getElementById("result");
+
+        function loadQuestion(index) {
+            const q = questions[index];
+            questionElement.textContent = `${index + 1}. ${q.question}`;
+            optionsElement.innerHTML = "";
+            q.options.forEach((option, i) => {
+                const label = document.createElement("label");
+                const isChecked = answers[index] === i ? 'checked' : '';
+                label.innerHTML = `<input type='radio' name='option' value='${i}' ${isChecked}> ${option}`;
+                optionsElement.appendChild(label);
+            });
+            prevBtn.style.display = index === 0 ? "none" : "inline-block";
+            nextBtn.style.display = index === questions.length - 1 ? "none" : "inline-block";
+        }
+
+        function saveAnswer() {
+            const selected = document.querySelector("input[name='option']:checked");
+            answers[currentQuestion] = selected ? parseInt(selected.value) : null;
+        }
+
+        function calculateResult() {
+            let correct = 0, wrong = 0, unanswered = 0;
+            answers.forEach((ans, i) => {
+                if (ans === null) unanswered++;
+                else if (ans === questions[i].answer) correct++;
+                else wrong++;
+            });
+            const percentage = ((correct / questions.length) * 100).toFixed(2);
+            resultElement.innerHTML = `
+                Correct: ${correct}<br>
+                Wrong: ${wrong}<br>
+                Unanswered: ${unanswered}<br>
+                Score: ${percentage}%
+            `;
+            resultElement.style.display = "block";
+            document.querySelector(".question-card").style.display = "none";
+        }
+
+        nextBtn.addEventListener("click", () => {
+            saveAnswer();
+            currentQuestion++;
+            loadQuestion(currentQuestion);
+        });
+
+        prevBtn.addEventListener("click", () => {
+            saveAnswer();
+            currentQuestion--;
+            loadQuestion(currentQuestion);
+        });
+
+        submitBtn.addEventListener("click", () => {
+            saveAnswer();
+            calculateResult();
+            submitBtn.style.display = "none";
+        });
+
+        // Initial load
+        loadQuestion(currentQuestion);
+    </script>
+</body>
+</html>

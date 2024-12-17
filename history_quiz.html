@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            /* background-color: #007BFF; */
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .question-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .question-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .options label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #submit-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+        }
+
+        #result {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 50px;
+            color: red;
+        }
+    </style>
+</head>
+<body style="background-image: url(his.jpeg);">
+    <header>
+        History Quiz
+    </header>
+
+    <div class="quiz-container">
+        <div id="question-card" class="question-card">
+            <h3 id="question">Question text</h3>
+            <div class="options" id="options">
+                <!-- Options will be injected here -->
+            </div>
+            <div class="navigation">
+                <button id="prev-btn">Previous</button>
+                <button id="next-btn">Next</button>
+            </div>
+        </div>
+        <div id="result"></div>
+    </div>
+    <button id="submit-btn">Submit</button>
+
+    <script>
+        const questions = [
+            { question: "Who was the first president of the United States?", options: ["George Washington", "Abraham Lincoln", "Thomas Jefferson", "John Adams"], answer: 0 },
+            { question: "In which year did World War I begin?", options: ["1912", "1914", "1916", "1918"], answer: 1 },
+            { question: "Who was the first emperor of China?", options: ["Qin Shi Huang", "Han Wudi", "Emperor Wu", "Tang Taizong"], answer: 0 },
+            { question: "Which country was the first to land a man on the Moon?", options: ["USA", "Russia", "China", "India"], answer: 0 },
+            { question: "Who was the famous queen of ancient Egypt?", options: ["Cleopatra", "Nefertiti", "Hatshepsut", "Ramses II"], answer: 0 },
+            { question: "In which year did the Titanic sink?", options: ["1905", "1912", "1920", "1930"], answer: 1 },
+            { question: "Who discovered America in 1492?", options: ["Christopher Columbus", "Leif Erikson", "Marco Polo", "Ferdinand Magellan"], answer: 0 },
+            { question: "Which event triggered the start of World War II?", options: ["Attack on Pearl Harbor", "German invasion of Poland", "Bombing of Hiroshima", "Assassination of Archduke Franz Ferdinand"], answer: 1 },
+            { question: "What ancient civilization built the pyramids?", options: ["Romans", "Greeks", "Egyptians", "Mesopotamians"], answer: 2 },
+            { question: "Who was the leader of the Soviet Union during World War II?", options: ["Joseph Stalin", "Vladimir Lenin", "Leon Trotsky", "Mikhail Gorbachev"], answer: 0 },
+            { question: "Who was the famous leader of the Indian independence movement?", options: ["Jawaharlal Nehru", "Mahatma Gandhi", "Subhas Chandra Bose", "Bhagat Singh"], answer: 1 },
+            { question: "What year did the Berlin Wall fall?", options: ["1987", "1989", "1991", "1993"], answer: 1 },
+            { question: "Who was the first human to journey into space?", options: ["Neil Armstrong", "Yuri Gagarin", "Buzz Aldrin", "Alan Shepard"], answer: 1 },
+            { question: "Which empire was ruled by Julius Caesar?", options: ["Roman Empire", "Ottoman Empire", "Mongol Empire", "Persian Empire"], answer: 0 },
+            { question: "Which war was fought between the North and South regions of the United States?", options: ["American Revolutionary War", "American Civil War", "World War I", "World War II"], answer: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        const answers = new Array(questions.length).fill(null);
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const nextBtn = document.getElementById("next-btn");
+        const prevBtn = document.getElementById("prev-btn");
+        const submitBtn = document.getElementById("submit-btn");
+        const resultElement = document.getElementById("result");
+
+        function loadQuestion(index) {
+            const q = questions[index];
+            questionElement.textContent = `${index + 1}. ${q.question}`;
+            optionsElement.innerHTML = "";
+            q.options.forEach((option, i) => {
+                const label = document.createElement("label");
+                const isChecked = answers[index] === i ? 'checked' : '';
+                label.innerHTML = `<input type='radio' name='option' value='${i}' ${isChecked}> ${option}`;
+                optionsElement.appendChild(label);
+            });
+            prevBtn.style.display = index === 0 ? "none" : "inline-block";
+            nextBtn.style.display = index === questions.length - 1 ? "none" : "inline-block";
+        }
+
+        function saveAnswer() {
+            const selected = document.querySelector("input[name='option']:checked");
+            answers[currentQuestion] = selected ? parseInt(selected.value) : null;
+        }
+
+        function calculateResult() {
+            let correct = 0, wrong = 0, unanswered = 0;
+            answers.forEach((ans, i) => {
+                if (ans === null) unanswered++;
+                else if (ans === questions[i].answer) correct++;
+                else wrong++;
+            });
+            const percentage = ((correct / questions.length) * 100).toFixed(2);
+            resultElement.innerHTML = `
+                Correct: ${correct}<br>
+                Wrong: ${wrong}<br>
+                Unanswered: ${unanswered}<br>
+                Score: ${percentage}%
+            `;
+            resultElement.style.display = "block";
+            document.querySelector(".question-card").style.display = "none";
+        }
+
+        nextBtn.addEventListener("click", () => {
+            saveAnswer();
+            currentQuestion++;
+            loadQuestion(currentQuestion);
+        });
+
+        prevBtn.addEventListener("click", () => {
+            saveAnswer();
+            currentQuestion--;
+            loadQuestion(currentQuestion);
+        });
+
+        submitBtn.addEventListener("click", () => {
+            saveAnswer();
+            calculateResult();
+            submitBtn.style.display = "none";
+        });
+
+        // Initial load
+        loadQuestion(currentQuestion);
+    </script>
+</body>
+</html>

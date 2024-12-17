@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Wise Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            /* background-color: #007BFF; */
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 28px;
+            font-weight: bold;
+
+        }
+
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .quiz-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-card:hover {
+            background-color: #f1f8ff;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .quiz-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+
+        .quiz-details {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .quiz-details h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 22px;
+        }
+
+        .quiz-details p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .quiz-card button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .quiz-card button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body style="background-image: url(quiz_b.jpg);">
+    <header>
+        Welcome to the Quiz
+    </header>
+
+    <div class="quiz-container">
+        <div class="quiz-card" onclick="redirectToQuiz('general_Knowledge_quiz.html')">
+            <img src="general_Knowledge.jpeg" alt="Mathematics">
+            <div class="quiz-details">
+                <h3>General Knowledge</h3>
+                <p>Test your problem-solving skills with General Knowledge questions.</p>
+            </div>
+            <button>Start Quiz</button>
+        </div>
+        
+        <!-- <div class="quiz-card" onclick="redirectToQuiz('history_quiz.html')">
+            <img src="https://via.placeholder.com/100?text=Science" alt="Science">
+            <div class="quiz-details">
+                <h3>History</h3>
+                <p>Explore  the History of the World.</p>
+            </div>
+            <button>Start Quiz</button>
+        </div> -->
+
+        <div class="quiz-card" onclick="redirectToQuiz('history_quiz.html')">
+            <img src="history.webp" alt="History">
+            <div class="quiz-details">
+                <h3>History</h3>
+                <p>Delve into the events that shaped our world.</p>
+            </div>
+            <button>Start Quiz</button>
+        </div>
+
+        <div class="quiz-card" onclick="redirectToQuiz('information_technology_quiz.html')">
+            <img src="informationtechnology.jpeg" alt="Geography">
+            <div class="quiz-details">
+                <h3>Information Technology</h3>
+                <p>Learn about the Information Technology.</p>
+            </div>
+            <button>Start Quiz</button>
+        </div>
+
+        <div class="quiz-card" onclick="redirectToQuiz('html_quiz.html')">
+            <img src="html.jpeg" alt="HTML">
+            <div class="quiz-details">
+                <h3>HTML</h3>
+                <p>Assess your skills in HTML for building web pages.</p>
+            </div>
+            <button>Start Quiz</button>
+        </div>
+
+        <div class="quiz-card" onclick="redirectToQuiz('css_quiz.html')">
+            <img src="css.jpeg" alt="CSS">
+            <div class="quiz-details">
+                <h3>CSS</h3>
+                <p>Test your knowledge in CSS styling and design.</p>
+            </div>
+            <button>Start Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        function redirectToQuiz(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
